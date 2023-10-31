@@ -29,12 +29,19 @@ def matrix_multiplication(a: np.ndarray, b: np.ndarray) -> np.ndarray:
 
     # TODO: test if shape of matrices is compatible and raise error if not
 
+    if m_a != m_b:
+        raise ValueError("Die Matrizen können nicht multipliziert werden")
+    
     # Initialize result matrix with zeros
     c = np.zeros((n, p))
 
     # TODO: Compute matrix product without the usage of numpy.dot()
 
-
+    for i in range(0,m_a):
+        for j in range(0,m_b):
+            for k in range(m_a):
+                c[i][j] += a[i][k] * b[k][j]
+            
     return c
 
 
