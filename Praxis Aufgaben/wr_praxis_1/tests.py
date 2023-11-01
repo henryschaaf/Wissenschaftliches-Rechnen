@@ -33,7 +33,10 @@ class Tests(unittest.TestCase):
         # TODO
 
     def test_inverse_rotation(self):
-        pass
+        theta = 90
+        expected_inverse_matrix = np.array([[0, 1], [-1, 0]])        
+        result_matrix = inverse_rotation(theta)
+        self.assertTrue(np.allclose(result_matrix, expected_inverse_matrix))
         # TODO
 
 

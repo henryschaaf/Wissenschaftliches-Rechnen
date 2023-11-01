@@ -201,12 +201,17 @@ def rotation_matrix(theta: float) -> np.ndarray:
 
     # TODO: convert angle to radians
 
+    theta = np.radians(theta)
 
     # TODO: calculate diagonal terms of matrix
 
+    r[0][0] = np.cos(theta)
+    r[1][1] = np.cos(theta)
 
     # TODO: off-diagonal terms of matrix
 
+    r[1][0] = np.sin(theta)
+    r[0][1] = -np.sin(theta)
 
     return r
 
@@ -226,8 +231,19 @@ def inverse_rotation(theta: float) -> np.ndarray:
     """
 
     # TODO: compute inverse rotation matrix
+    theta = np.radians(theta)
+
 
     m = np.zeros((2, 2))
+
+    factor = 1/(np.cos(theta) ** 2 + np.sin(theta) ** 2)
+    m[1][1] = np.cos(theta) * factor
+    m[0][0] = np.cos(theta) * factor
+
+    # TODO: off-diagonal terms of matrix
+
+    m[1][0] = -np.sin(theta) * factor
+    m[0][1] = np.sin(theta) * factor
     
 
     return m
