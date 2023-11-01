@@ -1,7 +1,7 @@
 
 import numpy as np
 import unittest
-from main import rotation_matrix, matrix_multiplication, compare_multiplication, inverse_rotation
+from main import rotation_matrix, matrix_multiplication, compare_multiplication, inverse_rotation, close
 
 class Tests(unittest.TestCase):
 
@@ -21,8 +21,12 @@ class Tests(unittest.TestCase):
         # TODO
         
     def test_is_close(self):
-        pass
         # TODO
+        
+        a = np.array([[1.0, 2.0], [3.0, 4.0]])
+        b = np.array([[1.0, 2.0], [3.0, 7.1]])
+        self.assertTrue(close(a, b, 3.1))
+        
         
     def test_rotation_matrix(self):
         pass

@@ -155,10 +155,26 @@ def close(a: np.ndarray, b: np.ndarray, eps: np.number=1e-08) -> bool:
 
     Forbidden: numpy.isclose, numpy.allclose
     """
-    isclose = False
+    isclose = True
     # TODO: check if a and b are compareable
 
+    if a.shape != b.shape:
+        raise ValueError("Die Matrizen sind nicht vergleichbar.")
+
     # TODO: check if all entries in a are close to the corresponding entry in b
+
+    zeilen, spalten = a.shape
+    for i in range(0,zeilen):
+        for j in range(0,spalten):
+            if a[i][j] > b[i][j]:
+                result = a[i][j] - b[i][j]
+            else:
+                result = b[i][j] - a[i][j]
+            if result > eps:
+                isclose = False
+
+            
+
 
     return isclose
 
