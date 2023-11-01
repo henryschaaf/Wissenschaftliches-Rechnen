@@ -73,6 +73,9 @@ def compare_multiplication(nmax: int, n: int) -> dict:
     for m in range(2, nmax, n):
 
         # TODO: Create random mxm matrices a and b
+        a = np.random.randint(0,10,(m,m))
+        b = np.random.randint(0,10,(m,m))
+
 
         # Execute functions and measure the execution time
         time_mat_mult, result_mat_mult = timedcall(matrix_multiplication, a, b)
