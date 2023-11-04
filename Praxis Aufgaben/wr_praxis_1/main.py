@@ -116,7 +116,7 @@ def machine_epsilon(fp_format: np.dtype) -> np.number:
     """
 
     # TODO: create epsilon element with correct initial value and data format fp_format
-    eps = fp_format.type(0.0)
+    eps = fp_format.type(1.0)
 
 
     # Create necessary variables for iteration
@@ -132,12 +132,9 @@ def machine_epsilon(fp_format: np.dtype) -> np.number:
     while one + eps != one:
         eps /= two
         i+= 1
-        
+        print('{0:4.0f} |  {1:16.8e}   | equal 1'.format(i, eps))
 
 
-
-
-    print('{0:4.0f} |  {1:16.8e}   | equal 1'.format(i, eps))
     return eps
 
 
