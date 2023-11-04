@@ -129,6 +129,13 @@ def machine_epsilon(fp_format: np.dtype) -> np.number:
 
     # TODO: determine machine precision without the use of numpy.finfo()
 
+    while one + eps != one:
+        eps /= 2
+        i+= 1
+        
+
+
+
 
     print('{0:4.0f} |  {1:16.8e}   | equal 1'.format(i, eps))
     return eps
