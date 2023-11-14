@@ -37,8 +37,8 @@ def matrix_multiplication(a: np.ndarray, b: np.ndarray) -> np.ndarray:
 
     # TODO: Compute matrix product without the usage of numpy.dot()
 
-    for i in range(0,m_a):
-        for j in range(0,m_b):
+    for i in range(0,n):
+        for j in range(0,p):
             for k in range(m_a):
                 c[i][j] += a[i][k] * b[k][j]
             
