@@ -10,7 +10,8 @@ from main import compute_tomograph, gaussian_elimination
 
 class Tests(unittest.TestCase):
     def test_gaussian_elimination(self):
-        A = np.random.randn(4, 4)
+        #A = np.random.randn(4, 4)
+        A = np.array([[1,3,4,5],[3,4,5,5],[2,3,4,5],[10,5,6,2]],dtype=float)
         x = np.random.rand(4)
         b = np.dot(A, x)
         A_elim, b_elim = gaussian_elimination(A, b)
@@ -18,7 +19,7 @@ class Tests(unittest.TestCase):
         self.assertTrue(np.allclose(A_elim, np.triu(A_elim)))  # Check if matrix is upper triangular
 
     def test_back_substitution(self):
-        pass
+        A = np.array([11,44,1],[0.1,0.4,3],[11,44,1])
         # TODO
 
     def test_cholesky_decomposition(self):

@@ -34,7 +34,58 @@ def gaussian_elimination(A: np.ndarray, b: np.ndarray, use_pivoting: bool = True
 
     # TODO: Test if shape of matrix and vector is compatible and raise ValueError if not
 
+    n_a, m_a = A.shape
+    n_b, = b.shape
+
+    print(n_a)
+    print(m_a)
+    print(n_b)
+
+    if n_a != n_b or n_a != m_a:
+        raise ValueError("Matrizen passen nicht")
+    
     # TODO: Perform gaussian elimination
+    print(A ,b)
+
+    for i in range(0,m_a):
+        
+        max = A[i][i]
+        init = i
+        for j in range(i+1,n_a):
+            if A[j][i] > max:
+                max = A[j][i]
+                init = j
+
+        if use_pivoting == True:
+            
+
+            if A[init][i] != 0:
+                temp = np.copy(A[init, :])
+                temp_b = b[init]
+                A[init, :] = A[i, :]
+                b[init] = b[i]
+
+                A[i, :] = temp
+                b[i] = temp_b
+        
+        if A[i][i] == 0 and use_pivoting == False:
+            raise ValueError("Pivoting empfohlen")
+        
+        if np.all(A[i,:] == 0):
+            raise ValueError("Nullzeile")
+        print(A ,b)
+        print("\n")
+                    
+        
+        
+        for j in range(i + 1,n_a):
+            mult = A[j][i] / A[i][i]
+            A[j][:] -= mult * A[i][:]
+            b[j] -= mult * b[i]
+
+
+    print(A ,b)
+    
 
     return A, b
 
@@ -62,10 +113,21 @@ def back_substitution(A: np.ndarray, b: np.ndarray) -> np.ndarray:
 
     # TODO: Test if shape of matrix and vector is compatible and raise ValueError if not
 
+    n_a, m_a = A.shape
+    n_b, = b.shape
+
+    if n_a != n_b or n_a != m_a:
+        raise ValueError("Matrizen passen nicht")
+    
     # TODO: Initialize solution vector with proper size
-    x = np.zeros(1)
+    x = np.zeros(m_a)
 
     # TODO: Run backsubstitution and fill solution vector, raise ValueError if no/infinite solutions exist
+
+    for i in range(m_a - 1, -1, -1):
+        if A[i][i] == 0 or b[i] == 0:
+            raise ValueError("Keine oder unendlich Lösungen")
+        x[i] = (b[i] - np.dot(x[i + 1:],A[i][i + 1:]))/A[i][i]
 
     return x
 
@@ -84,7 +146,7 @@ def compute_cholesky(M: np.ndarray) -> np.ndarray:
     ValueError: L is not symmetric and psd
 
     Return:
-    L : Cholesky factor of M
+    L : Cholesky multtor of M
 
     Forbidden:
     - numpy.linalg.*
@@ -95,7 +157,7 @@ def compute_cholesky(M: np.ndarray) -> np.ndarray:
 
 
 
-    # TODO build the factorization and raise a ValueError in case of a non-positive definite input matrix
+    # TODO build the multtorization and raise a ValueError in case of a non-positive definite input matrix
 
     L = np.zeros((n, n))
 
@@ -108,7 +170,7 @@ def solve_cholesky(L: np.ndarray, b: np.ndarray) -> np.ndarray:
     Solve the system L L^T x = b where L is a lower triangular matrix
 
     Arguments:
-    L : matrix representing the Cholesky factor
+    L : matrix representing the Cholesky multtor
     b : right hand side of the linear system
 
     Raised Exceptions:
