@@ -37,15 +37,13 @@ def gaussian_elimination(A: np.ndarray, b: np.ndarray, use_pivoting: bool = True
     n_a, m_a = A.shape
     n_b, = b.shape
 
-    print(n_a)
-    print(m_a)
-    print(n_b)
+ 
 
     if n_a != n_b or n_a != m_a:
         raise ValueError("Matrizen passen nicht")
     
     # TODO: Perform gaussian elimination
-    print(A ,b)
+ 
 
     for i in range(0,m_a):
         
@@ -73,8 +71,7 @@ def gaussian_elimination(A: np.ndarray, b: np.ndarray, use_pivoting: bool = True
         
         if np.all(A[i,:] == 0):
             raise ValueError("Nullzeile")
-        print(A ,b)
-        print("\n")
+        
                     
         
         
@@ -84,7 +81,7 @@ def gaussian_elimination(A: np.ndarray, b: np.ndarray, use_pivoting: bool = True
             b[j] -= mult * b[i]
 
 
-    print(A ,b)
+  
     
 
     return A, b
@@ -131,9 +128,36 @@ def back_substitution(A: np.ndarray, b: np.ndarray) -> np.ndarray:
 
     return x
 
+def forward_substitution(A: np.ndarray, b: np.ndarray ) -> np.ndarray:
+    n_a, m_a = A.shape
+    n_b, = b.shape
 
+    if n_a != n_b or n_a != m_a:
+        raise ValueError("Matrizen passen nicht")
+    
+    x = np.zeros(m_a)
+
+
+    for i in range(0,m_a):
+        if A[i][i] == 0 or b[i] == 0:
+            raise ValueError("Keine oder unendlich Lösungen")
+        x[i] = (b[i] - np.dot(x[:i],A[i][:i]))/A[i][i]
+
+    return x
 ####################################################################################################
 # Exercise 2: Cholesky decomposition
+
+def is_Symmetrisch(M: np.ndarray) -> bool:
+    (n, m) = M.shape
+
+    if n != m:
+        return False
+
+    for i in range(0,n):
+        if not np.all(np.isclose(M[i, i + 1:], M[i + 1:,i], np.finfo(float).eps)):
+            return False
+        
+    return True
 
 def compute_cholesky(M: np.ndarray) -> np.ndarray:
     """
@@ -154,16 +178,39 @@ def compute_cholesky(M: np.ndarray) -> np.ndarray:
 
     # TODO check for symmetry and raise an exception of type ValueError
     (n, m) = M.shape
+    
+    if not is_Symmetrisch(M):
+        raise ValueError("Matrix nicht Symmetrisch")
 
-
+    
 
     # TODO build the multtorization and raise a ValueError in case of a non-positive definite input matrix
 
     L = np.zeros((n, n))
 
+    for j in range(0,n):
+        for i in range(j + 1):
+            if i == j:
+                
+                if M[i,i] < 0 or (M[i,i] - (np.sum(L[i, :i] ** 2))) < 0:
+                    raise ValueError("Matrix ist keine PD-Matrix")
+                
+                L[i,i] = np.sqrt(M[i,i] - (np.sum(L[i, :i] ** 2)))
+            else:
+                L[j,i] = (M[j,i] - np.sum((L[j,:i] * L[i,:i]))) / L[i,i]
+            
 
     return L
 
+def is_lowerDreickesMatrix(M: np.ndarray) -> bool:
+   
+    n, m = M.shape
+
+    for i in range(0,n):
+        if not np.array_equal(M[i,i+1:], np.zeros(n - i - 1)):
+            return False
+    return True
+                          
 
 def solve_cholesky(L: np.ndarray, b: np.ndarray) -> np.ndarray:
     """
@@ -186,11 +233,25 @@ def solve_cholesky(L: np.ndarray, b: np.ndarray) -> np.ndarray:
 
     # TODO Check the input for validity, raising a ValueError if this is not the case
     (n, m) = L.shape
+    n_b, = b.shape
+
+    if n != n_b or n != m:
+        raise ValueError("Eingaben passen nicht")
+    
+
+    if not is_lowerDreickesMatrix(L):
+        raise ValueError("Keine unere Dreiecksmatrix")
+    
+    
+    
 
 
     # TODO Solve the system by forward- and backsubstitution
     x = np.zeros(m)
 
+    x = np.transpose(forward_substitution(L,b))
+
+    x = back_substitution(np.transpose(L),x)
 
     return x
 
@@ -222,20 +283,34 @@ def setup_system_tomograph(n_shots: np.int64, n_rays: np.int64, n_grid: np.int64
     """
 
     # TODO: Initialize system matrix with proper size
-    L = np.zeros((1, 1))
+    L = np.zeros((n_rays * n_shots, n_grid * n_grid))
     # TODO: Initialize intensity vector
-    g = np.zeros(1)
+    g = np.zeros(n_rays * n_shots)
 
     # TODO: Iterate over equispaced angles, take measurements, and update system matrix and sinogram
     theta = 0
+
+    for i in range(0,n_shots):
+        intensities, ray_indices, isect_indices, lengths = tomograph.take_measurement(n_grid, n_rays, theta)
+        theta += np.pi / n_shots
+
+        for j in range(0, n_rays):
+            g[i * n_rays + j] = intensities[j]
+
+        for j in range(0, len(ray_indices)):
+            #g[i * n_rays + ray_indices[j]] = lengths[ray_indices[j]] # unnötig oft aufgerufen
+
+            
+            L[i * n_rays + ray_indices[j],isect_indices[j]] = lengths[j]
+
+    
     # Take a measurement with the tomograph from direction r_theta.
     # intensities: measured intensities for all <n_rays> rays of the measurement. intensities[n] contains the intensity for the n-th ray
     # ray_indices: indices of rays that intersect a cell
     # isect_indices: indices of intersected cells
     # lengths: lengths of segments in intersected cells
     # The tuple (ray_indices[n], isect_indices[n], lengths[n]) stores which ray has intersected which cell with which length. n runs from 0 to the amount of ray/cell intersections (-1) of this measurement.
-    intensities, ray_indices, isect_indices, lengths = tomograph.take_measurement(n_grid, n_rays, theta)
-
+    # intensities, ray_indices, isect_indices, lengths = tomograph.take_measurement(n_grid, n_rays, theta)
 
     return [L, g]
 
@@ -264,11 +339,20 @@ def compute_tomograph(n_shots: np.int64, n_rays: np.int64, n_grid: np.int64) -> 
     # Setup the system describing the image reconstruction
     [L, g] = setup_system_tomograph(n_shots, n_rays, n_grid)
 
+    L_transf = np.transpose(L)
+
     # TODO: Solve for tomographic image using your Cholesky solver
     # (alternatively use Numpy's Cholesky implementation)
 
+
+    x = solve_cholesky(compute_cholesky(np.dot(L_transf,L)),np.dot(L_transf,g))
+
     # TODO: Convert solution of linear system to 2D image
     tim = np.zeros((n_grid, n_grid))
+
+    for i in range(0,n_grid):
+        for j in range(0,n_grid):
+            tim[i,j] = x[i * n_grid + j]
 
     return tim
 
