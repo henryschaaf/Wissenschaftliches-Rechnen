@@ -16,13 +16,35 @@ def lagrange_interpolation(x: np.ndarray, y: np.ndarray) -> (np.poly1d, list):
     polynomial: polynomial as np.poly1d object
     base_functions: list of base polynomials
     """
-
+    
     assert (x.size == y.size)
 
     polynomial = np.poly1d(0)
     base_functions = []
 
+    print("\n")
+    print("x wert: ")
+    print(x)
+    print("y wert: ")
+    print(y)
+    print("\n")
+
     # TODO: Generate Lagrange base polynomials and interpolation polynomial
+    for i in range(len(x)):
+        base_functions.append(1)
+        for j in range(len(x)):
+            if(i == j):
+               continue
+            base_functions[i] *= np.poly1d((1,-x[j]))/(x[i]-x[j])
+            print("\n")
+            print("base")
+            print(base_functions)
+        
+        
+        polynomial = polynomial + (y[i] * base_functions[i])
+        print("\n")
+        print("poly")
+        print(polynomial)
 
     return polynomial, base_functions
 
