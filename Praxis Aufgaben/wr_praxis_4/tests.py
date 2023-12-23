@@ -66,6 +66,12 @@ class Tests(unittest.TestCase):
         self.assertTrue(len(spline) == 7)
         for i, pol in enumerate(spline):
             coeffs = pad_coefficients(pol, 4)
+            print("Meins: ")
+            print(coeffs)
+            print("\n")
+            print("Lösung: ")
+            print(Tests.data["t2_spline"][i])
+            print("\n")
             self.assertTrue(np.allclose(coeffs, Tests.data["t2_spline"][i]))
         plot_spline([x, y], spline)
 
@@ -88,7 +94,16 @@ class Tests(unittest.TestCase):
                 animate(keytimes, keyframes, linear_animation(keytimes, keyframes))
                 self.fail("Natural cubic interpolation not implemented.")
             splines.append(spline)
+            np.set_printoptions(threshold=np.inf)
 
+            print("Meins: ")
+            print(spline)
+            print("\n")
+            print(splines)
+            print("\n")
+            print("Lösung: ")
+            print(keyframes)
+            print("\n")
         animate(keytimes, keyframes, cubic_animation(keytimes, splines))
 
     def test_4_periodic_cubic_animation(self):
