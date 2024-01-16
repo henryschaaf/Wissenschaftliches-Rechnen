@@ -17,14 +17,23 @@ def dft_matrix(n: int) -> np.ndarray:
     - numpy.fft.*
     """
     # TODO: initialize matrix with proper size
-    F = np.zeros((1, 1), dtype='complex128')
+    F = np.zeros((n, n), dtype='complex128')
 
     # TODO: create principal term for DFT matrix
 
+    omega = np.exp(2j * np.pi / n,dtype=np.complex128)
+
+    print("omega: ", omega)
+
     # TODO: fill matrix with values
+
+    for i in range(n):
+        for j in range(n):
+            F[i,j] = np.complex128(omega ** (j * i))
 
     # TODO: normalize dft matrix
 
+    F = np.dot(np.complex128(1/np.sqrt(n)), F)
 
     return F
 
@@ -39,9 +48,15 @@ def is_unitary(matrix: np.ndarray) -> bool:
     Return:
     unitary: True if the matrix is unitary
     """
-    unitary = True
+    unitary = False
     # TODO: check that F is unitary, if not return false
 
+    conjugated = np.conjugate(matrix).T
+
+    matrix_result = np.dot(conjugated, matrix)
+
+    if np.allclose(matrix_result, np.eye(matrix.shape[0])) and matrix.shape[0] == matrix.shape[1]:
+        unitary = True
     return unitary
 
 

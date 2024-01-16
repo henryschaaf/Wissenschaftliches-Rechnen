@@ -25,6 +25,15 @@ class Tests(unittest.TestCase):
     def test_1_dft_matrix(self):
         dft1 = dft_matrix(n=16)
         self.assertTrue(dft1.shape[0] == dft1.shape[1] == 16)
+        print("Meine Lösung:")
+        print(dft1)
+        print("\n")
+        print("Richtige Lösung:")
+        print(Tests.data["t1_dft1"])
+
+        print("\n")
+        print("Differenz")
+        print(dft1 - Tests.data["t1_dft1"])
         self.assertTrue(np.allclose(dft1, Tests.data["t1_dft1"]))
 
         dft2 = dft_matrix(n=64)
