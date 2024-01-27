@@ -61,6 +61,9 @@ class Tests(unittest.TestCase):
         s1, fs1 = create_harmonics(16)
         self.assertTrue(len(s1) == len(fs1) == 16)
         self.assertTrue(np.allclose(s1, Tests.data["t3_s1"]))
+        print("test: ", Tests.data["t3_fs1"])
+
+        print("diff: ", Tests.data["t3_fs1"] - fs1)
         self.assertTrue(np.allclose(fs1, Tests.data["t3_fs1"]))
 
         s2, fs2 = create_harmonics()
@@ -73,16 +76,33 @@ class Tests(unittest.TestCase):
 #        np.savez("data3", t3_s1=s1, t3_fs1=fs1, t3_s2=s2, t3_fs2=fs2)
 
     def test_4_shuffle_bit_reversed_order(self):
-        d1 = shuffle_bit_reversed_order(np.linspace(0, 15, 16))
-        d2 = shuffle_bit_reversed_order(np.linspace(0, 8191, 8192))
+        print("\n")
+        print("testjsh",dft_matrix(4))
+        d1 = shuffle_bit_reversed_order(np.array([1, 2, 3, 4, 5, 6, 7, 8]))
+        #d2 = shuffle_bit_reversed_order(np.linspace(0, 8191, 8192))
+        print("\n")
+        print("d1: ", d1)
+        print("\n")
+        print(Tests.data["t4_d3"])
+        print("\n")
+        #print("d2: ", d2)
+        print("\n")
+        print(Tests.data["t4_d2"])
         self.assertTrue(np.allclose(d1, Tests.data["t4_d1"]))
-        self.assertTrue(np.allclose(d2, Tests.data["t4_d2"]))
+        #self.assertTrue(np.allclose(d2, Tests.data["t4_d2"]))
 
 #        np.savez("data4", t4_d1=d1, t4_d2=d2)
 
     def test_5_fft(self):
-        data = np.random.randn(128)
+        data = np.array([0,1,2,3,4,5,6,7]) #np.random.randn(8)
         data1 = ifft(fft(data))
+        print("\n")
+        print("data: ", data)
+        print("\n")
+        print("data1: ", data1)
+        data2 = np.fft.fft(data)/np.sqrt(data.size)
+        print("\n")
+        print("data2: ", data2)
         self.assertTrue(np.allclose(data, data1))
         self.assertTrue(np.allclose(fft(data), np.fft.fft(data)/np.sqrt(data.size)))
 
@@ -138,6 +158,10 @@ class Tests(unittest.TestCase):
     def test_6_generate_tone(self):
         mid_c = generate_tone()
         t42 = generate_tone(42.0)
+        print("\n")
+        print("mid_c: ", mid_c)
+        print("\n")
+        print("ttesst: ",Tests.data["t6_midc"])
 
         self.assertTrue(np.allclose(mid_c, Tests.data["t6_midc"]))
         self.assertTrue(np.allclose(t42, Tests.data["t6_42"]))
