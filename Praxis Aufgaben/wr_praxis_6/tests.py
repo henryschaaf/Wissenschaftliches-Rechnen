@@ -61,7 +61,8 @@ class Tests(unittest.TestCase):
             sampling, size_x, size_y = generate_sampling(borders, size)
             res = generate_newton_fractal(f, df, roots, sampling, n_iters_max=max_iterations)
             colors = get_colors(roots)
-
+            print("may array", res[0])
+            print("\n")
             # Generate image
             img = np.zeros((sampling.shape[0], sampling.shape[1], 3))
             for i in range(size_y):
@@ -70,6 +71,10 @@ class Tests(unittest.TestCase):
                         img[i, j] = colors[res[i, j][0]] / max(1.0, res[i, j][1] / 6.0)
 
             plt.imsave('data/fractal_' + name + '.png', img)
+            print("img array", img[0])
+            print("\n")
+            print("diff array", self.data["fr_" + str(c)][0] - img[0])
+            print("\n")
             self.assertTrue(np.allclose(self.data["fr_" + str(c)], img))
             # np.savez("data"+name, fr=img)
 
