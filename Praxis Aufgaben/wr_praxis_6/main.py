@@ -184,7 +184,13 @@ def surface_area(v: np.ndarray, f: np.ndarray) -> float:
     area = 0.0
 
     # TODO: iterate over all triangles and sum up their area
+    print((len(v)))
+    for i in range(f.shape[0]):
+        len_1 = (v[f[i,1]] - v[f[i,0]])
+        len_2 = (v[f[i,2]] - v[f[i,0]])
 
+        kreuzprodukt = np.cross(len_1, len_2)
+        area += 1/2 * np.sqrt((kreuzprodukt[0]) ** 2 + (kreuzprodukt[1]) ** 2 + (kreuzprodukt[2]) ** 2)
     return area
 
 
@@ -204,7 +210,22 @@ def surface_area_gradient(v: np.ndarray, f: np.ndarray) -> np.ndarray:
     gradient = np.zeros(v.shape)
 
     # TODO: iterate over all triangles and sum up the vertices gradients
+    len_ = len(f)
+    if len(v) < len(f):
+        len_ = len(v)
 
+    for i in range(len_):
+
+        vec_1 = (v[f[i,1]] - v[f[i,0]])
+        vec_2 = (v[f[i,2]] - v[f[i,0]])
+        vec_3 = (v[f[i,1]] - v[f[i,2]])
+        norm_vek = np.cross(vec_1,vec_2)
+        norm_vek = norm_vek / np.linalg.norm(norm_vek)
+        
+        print(np.sqrt(np.linalg.norm(norm_vek)))
+        gradient[i] += 0.5 * np.cross(vec_3, norm_vek)
+        #gradient[i] += 0.5 * np.cross(vec_2, norm_vek)
+        #gradient[i] += 0.5 * np.cross(vec_3, norm_vek)
     return gradient
 
 

@@ -83,6 +83,10 @@ class Tests(unittest.TestCase):
         nz = 12 # number of layers
         v, f, c = generate_cylinder(16, 8)
         a = surface_area(v, f)
+        print("\n")
+        print(a)
+        print("\n")
+
         self.assertTrue(np.isclose(a, 4.99431224361))
 
     def test_5_surface_area_gradient(self):
@@ -92,6 +96,11 @@ class Tests(unittest.TestCase):
         gradient = gradient / np.linalg.norm(gradient)
         reference = self.data["gradient"].flatten()
         reference = reference / np.linalg.norm(reference)
+        print("\n")
+        print("actual output ",gradient[0])
+        print("\n")
+        print("expected output" ,reference[0])
+        print("\n")
         self.assertTrue(np.allclose(reference, gradient))
         #np.savez("datagrad", grad=gradient)
 
